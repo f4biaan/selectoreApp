@@ -20,7 +20,8 @@ export class SelectorPageComponent implements OnInit {
   // llenarSelectores
   regiones: string[] = [];
   paises: PaisSmall[] = [];
-  fronteras: string[] = [];
+  // fronteras: string[] = [];
+  fronteras: PaisSmall[] = [];
 
   //UI
   cargando: boolean = false;
@@ -41,28 +42,36 @@ export class SelectorPageComponent implements OnInit {
           this.cargando = true;
         }),
         switchMap((region) => this.paisesService.getPaisesByRegion(region))
-        )
-        .subscribe((paises) => {
-          // console.log(paises);
-          this.paises = paises;
-        });
-
-        // cuando cambia el pais
-        this.miFormulario
-        .get('pais')
-        ?.valueChanges.pipe(
-          tap(() => {
-            this.fronteras = [];
-            this.miFormulario.get('frontera')?.reset('');
-            // this.miFormulario.get('frontera')?.enable();
-            this.cargando = true;
-        }),
-        switchMap((codigo) => this.paisesService.getPaisByCodigoCCA3(codigo))
       )
-      .subscribe((pais) => {
+      .subscribe((paises) => {
+        // console.log(paises);
+        this.paises = paises;
+      });
+
+    // cuando cambia el pais
+    this.miFormulario
+      .get('pais')
+      ?.valueChanges.pipe(
+        tap(() => {
+          this.fronteras = [];
+          this.miFormulario.get('frontera')?.reset('');
+          // this.miFormulario.get('frontera')?.enable();
+          this.cargando = true;
+        }),
+        switchMap((codigo) => this.paisesService.getPaisByCodigoCCA3(codigo)),
+        switchMap( pais => this.paisesService.getPaisesByCodigos(pais[0]?.borders!)),
+        tap(pais => {
+          if (pais.length === 0 )  {
+            this.cargando = false;
+          }
+        })
+      )
+      .subscribe((paises) => {
         // console.log('pais', pais[0]);
         // console.log('frontera', pais[0]?.borders);
-        this.fronteras = pais[0]?.borders || [];
+        // this.fronteras = pais[0]?.borders || [];
+        // console.log('fronteras', paises);
+        this.fronteras = paises;
         this.cargando = false;
       });
   }
