@@ -11,6 +11,7 @@ import { PaisSmall } from '../../interfaces/paises.interface';
 export class SelectorPageComponent implements OnInit {
   miFormulario: FormGroup = this.fb.group({
     region: ['', [Validators.required]],
+    pais: ['', [Validators.required]],
   });
 
   // llenarSelectores
