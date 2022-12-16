@@ -23,7 +23,7 @@ export class PaisesService {
   constructor(private http: HttpClient) {}
 
   getPaisesByRegion(region: string): Observable<PaisSmall[]> {
-    const url: string = `${this.baseUrl}/region/${region}?fields=cca3,name,borders`;
+    const url: string = `${this.baseUrl}/region/${region}?fields=cca3,name`;
     return this.http.get<PaisSmall[]>(url);
   }
 
@@ -34,5 +34,12 @@ export class PaisesService {
     }
     const url: string = `${this.baseUrl}/alpha/${codigo}`;
     return this.http.get<PaisSmall[]>(url);
+  }
+
+  getPaisByCodigoCCA3Small(codigo: string): Observable<PaisSmall> {
+    // console.log('codigo', codigo);
+
+    const url: string = `${this.baseUrl}/alpha/${codigo}?fields=cca3,name`;
+    return this.http.get<PaisSmall>(url);
   }
 }
